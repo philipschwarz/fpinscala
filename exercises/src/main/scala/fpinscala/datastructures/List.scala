@@ -50,19 +50,41 @@ object List { // `List` companion object. Contains functions for creating and wo
     foldRight(ns, 1.0)(_ * _) // `_ * _` is more concise notation for `(x,y) => x * y`; see sidebar
 
 
-  def tail[A](l: List[A]): List[A] = sys.error("todo")
+  def tail[A](l: List[A]): List[A] = l match {
+    case Nil => Nil
+    case Cons(h,t) => t
+  }
 
-  def setHead[A](l: List[A], h: A): List[A] = sys.error("todo")
+  def setHead[A](l: List[A], h: A): List[A] = l match {
+    case Nil => Nil
+    case Cons(_,t) => Cons(h,t)
+  }
+  def drop[A](l: List[A], n: Int): List[A] = (l,n) match {
+    case (Nil,_) => Nil
+    case (_,0) => l
+    case (Cons(_,t),_) => drop(t, n - 1)
+  }
 
-  def drop[A](l: List[A], n: Int): List[A] = sys.error("todo")
+  def dropWhile[A](l: List[A], f: A => Boolean): List[A] = l match {
+    case Nil => Nil
+    case Cons(h,t) => if (f(h)) dropWhile(t,f) else l
+  }
 
-  def dropWhile[A](l: List[A], f: A => Boolean): List[A] = sys.error("todo")
+  def init[A](l: List[A]): List[A] = l match {
+    case Nil => Nil
+    case Cons(_,Nil) => Nil
+    case Cons(h,t) => Cons(h,init(t))
+  }
 
-  def init[A](l: List[A]): List[A] = sys.error("todo")
+  def length[A](l: List[A]): Int = foldRight(l,0)((_,len) => len + 1)
 
-  def length[A](l: List[A]): Int = sys.error("todo")
-
-  def foldLeft[A,B](l: List[A], z: B)(f: (B, A) => B): B = sys.error("todo")
+  def foldLeft[A,B](l: List[A], z: B)(f: (B, A) => B): B = {
+    def foldIter(as:List[A],accumulator:B): B = as match {
+      case Nil => accumulator
+      case Cons(h,t) => foldIter(t,f(accumulator,h))
+    }
+    foldIter(l,z)
+  }
 
   def map[A,B](l: List[A])(f: A => B): List[B] = sys.error("todo")
 
